@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <!-- jQuery first, then Popper.js, then Bootstrap JS. -->
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.9.3/umd/popper.min.js" integrity="sha384-knhBOwpf8/28D6ygAjJeb0STNDZqfPbKaWQ8wIz/xgSc0xXwKsKhNype8fmfMka2" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+    <!-- Scatter JS. -->
+    <script src="js/scatter.min.js"></script>
+    <script src="js/eosforce.js"></script>
+
+    <script>
+
+      document.addEventListener('scatterLoaded',function(scatterExtension) {
+        scatter = window.scatter;
+        if (scatter == null) {
+          alert("请先安装scatter");
+        }else{
+          alert("scatter working");
+        }
+      });
+
+      // EOS RPC 网络设置
+      var network = {
+        blockchain:'eos',  // or eosforce
+        protocol:'https',
+        host:'eosforcenet.medishares.net',
+        port:443,
+        chainId:'bd61ae3a031e8ef2f97ee3b0e62776d6d30d4833c8f7c1645c657b149151004b'
+      };
+      var currentAccount = null;
+
+      // 连接
+      function connect(){
+        scatter.connect('MY_GAME_NAME').then(function(connected) {
+          if(connected){
+            alert('connect success');
+          }else{
+            alert('connect fail');
+          }
+        });
+      }
+
+      // 登录，获取 EOS 账户
+      function login(){
+        // scatter.forgetIdentity();
+        scatter.getIdentity({accounts:[network]}).then(function(result){
+          currentAccount =  result.accounts[0];
+          alert('account:'+JSON.stringify(currentAccount));
+        }).catch(error => {
+          alert('error:'+JSON.stringify(error));
+        });
+      }
+
+      // 转账
+      function transfer(){
+        if (currentAccount == null) {
+            alert('请先登录');
+        }
+        // alert(network.protocol+'://'+network.host);
+        var eos = scatter.eos(network, Eos);
+
+        eos.transfer(currentAccount.name, 'gushi', '0.0001 EOS', '给孤矢转点EOSC').then(function(result){
+          alert('result:'+JSON.stringify(result));
+        }).catch(error => {
+          alert('error:'+JSON.stringify(error));
+        });
+
+      }
+    </script>
+  </head>
+  <body>
+  <div class="container bs-docs-container">
+    <h3>Scatter.js 调用方法实例 - EOS Force</h3>
+    <div class="row">
+      <div class="col-md-12"><button type="button" class="btn btn-primary btn-lg btn-block" onclick="connect()">测试连接</button></div>
+      <br><br><br>
+      <div class="col-md-12"><button type="button" class="btn btn-success btn-lg btn-block" onclick="login()">登录</button></div>
+      <br><br><br>
+      <div class="col-md-12"><button type="button" class="btn btn-warning btn-lg btn-block" onclick="transfer()">转账</button></div>
+    </div>
+  </div>
+  </body>
+</html>

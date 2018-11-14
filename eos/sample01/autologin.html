@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <!-- jQuery first, then Popper.js, then Bootstrap JS. -->
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.9.3/umd/popper.min.js" integrity="sha384-knhBOwpf8/28D6ygAjJeb0STNDZqfPbKaWQ8wIz/xgSc0xXwKsKhNype8fmfMka2" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+    <!-- Scatter JS. -->
+    <script src="https://cdn.jsdelivr.net/npm/scatter-js@2.5.2/dist/scatter.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/eosjs@16.0.9/lib/eos.min.js"></script>
+
+    <script>
+
+      $(function(){
+        // EOS RPC 网络设置
+        var network = {
+          blockchain:'eos',
+          protocol:'https',
+          host:'mainnet.eoscannon.io',
+          port:443,
+          chainId:'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906'
+        };
+        var currentAccount = null;
+
+        scatter.connect('MY_GAME_NAME').then(connected => {
+          if(connected){
+
+            // 删除之前的登录账户
+            // scatter.forgetIdentity();
+
+            // 登录，获取 EOS 账户
+            scatter.getIdentity({accounts:[network]}).then(result => {
+              currentAccount =  result.accounts[0];
+              alert('account:'+JSON.stringify(currentAccount));
+              // alert('account:'+currentAccount.name);
+            }).catch(error => {
+              alert('error:'+JSON.stringify(error));
+            });
+
+          }else{
+            alert('connect fail');
+          }
+        });
+      })
+
+    </script>
+  </head>
+  <body>
+  <div class="container bs-docs-container">
+    <h3>Scatter 自动登录示例</h3>
+  </div>
+  </body>
+</html>
